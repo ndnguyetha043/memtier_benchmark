@@ -1,0 +1,64 @@
+# name: Garnet Benchmark
+# on: [push, pull_request]
+# jobs:
+#   benchmark:
+#     runs-on: ubuntu-latest
+#     services:
+#       garnet:
+#         image: ghcr.io/microsoft/garnet:latest
+#         ports:
+#           - 6379:6379
+#     steps:
+#     - name: Check out the repository
+#       uses: actions/checkout@v2
+    
+#     - name: Install dependencies
+#       run: |
+#         sudo apt-get -qq update
+#         sudo apt-get install lcov autoconf automake pkg-config libevent-dev libpcre3-dev libssl-dev
+
+#     - name: Build memtier_benchmark
+#       run: autoreconf -ivf && ./configure --enable-code-coverage && make -j
+
+#     - name: Increase connection limit
+#       run: |
+#         sudo sysctl -w net.ipv4.tcp_fin_timeout=10
+#         sudo sysctl -w net.ipv4.tcp_tw_reuse=1
+#         ulimit -n 40960
+
+#     - name: Benchmark
+#       run: |
+#         cd /home/runner/work/memtier_benchmark/ & ./memtier_benchmark -h localhost -p 6379 --ratio 1:0 -t 60 -c 20 -n 200000 --distinct-client-seed --hide-histogram
+
+
+version: 2.1
+jobs:
+  benchmark:
+    docker:
+    - image: ghcr.io/microsoft/garnet:latest
+    steps:
+    - checkout
+    - run:
+        name: Install dependencies
+        command: |
+          sudo apt-get -qq update
+          sudo apt-get install lcov autoconf automake pkg-config libevent-dev libpcre3-dev
+          libssl-dev
+    - run:
+        name: Build memtier_benchmark
+        command: autoreconf -ivf && ./configure --enable-code-coverage && make -j
+    - run:
+        name: Increase connection limit
+        command: |
+          sudo sysctl -w net.ipv4.tcp_fin_timeout=10
+          sudo sysctl -w net.ipv4.tcp_tw_reuse=1
+          ulimit -n 40960
+    - run:
+        name: Benchmark
+        command: |
+          cd /home/runner/work/memtier_benchmark/
+          ./memtier_benchmark -h localhost -p 6379 --ratio 1:0 -t 60 -c 20 -n 200000 --distinct-client-seed --hide-histogram
+workflows:
+  Garnet_Benchmark:
+    jobs:
+    - benchmark
