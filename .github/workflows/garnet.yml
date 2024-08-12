@@ -28,4 +28,4 @@ jobs:
 
     - name: Benchmark
       run:
-        cd /home/runner/work/memtier_benchmark/ & ./memtier_benchmark -h localhost -p 6379 --ratio 1:0 -t 30 -c 10 -n 10000 --distinct-client-seed --hide-histogram
+        cd /home/runner/work/memtier_benchmark/ & ./memtier_benchmark -h localhost -p 6379 --distinct-client-seed --hide-histogram --ratio 0:1 -t 30 -c 10 -n 100000
