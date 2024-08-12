@@ -39,17 +39,16 @@ jobs:
     - run:
         name: Install dependencies
         command: |
-          sudo apt-get -qq update
-          sudo apt-get install lcov autoconf automake pkg-config libevent-dev libpcre3-dev
-          libssl-dev
+          apt-get -qq update
+          apt-get install lcov autoconf automake pkg-config libevent-dev libpcre3-dev libssl-dev
     - run:
         name: Build memtier_benchmark
         command: autoreconf -ivf && ./configure --enable-code-coverage && make -j
     - run:
         name: Increase connection limit
         command: |
-          sudo sysctl -w net.ipv4.tcp_fin_timeout=10
-          sudo sysctl -w net.ipv4.tcp_tw_reuse=1
+          sysctl -w net.ipv4.tcp_fin_timeout=10
+          sysctl -w net.ipv4.tcp_tw_reuse=1
           ulimit -n 40960
     - run:
         name: Benchmark
