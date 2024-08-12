@@ -27,6 +27,5 @@ jobs:
         ulimit -n 40960
 
     - name: Benchmark
-      run: |
-        cd /home/runner/work/memtier_benchmark/
-        ./memtier_benchmark -h localhost -p 6379 --ratio 1:0 -t 30 -c 10 -n 10000 --distinct-client-seed --hide-histogram
+      run:
+        cd /home/runner/work/memtier_benchmark/ & ./memtier_benchmark -h localhost -p 6379 --ratio 1:0 -t 30 -c 10 -n 10000 --distinct-client-seed --hide-histogram
